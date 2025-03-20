@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio - Sistema de Cursos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .hero-section {
+      background: url('https://via.placeholder.com/1500x500') no-repeat center center/cover;
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+    }
+    .hero-section h1 {
+      font-size: 3rem;
+      font-weight: bold;
+    }
+    .hero-section p {
+      font-size: 1.2rem;
+    }
+    .search-box {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .category-menu {
+      margin-top: 20px;
+    }
+    .category-menu a {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+<!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">Sistema de Cursos</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/profesores">Profesores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/categorias">Categorías</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/cursos">Cursos</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Sección Hero -->
+<div class="hero-section">
+  <div class="container">
+    <h1>Bienvenido al Sistema de Cursos</h1>
+    <p>Encuentra los mejores cursos en línea y mejora tus habilidades.</p>
+    <!-- Buscador de cursos -->
+    <form th:action="@{/cursos/buscar}" method="get" class="search-box">
+      <div class="input-group">
+        <input type="text" name="nombre" class="form-control" placeholder="Buscar curso...">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Menú de categorías -->
+<div class="container category-menu">
+  <h2 class="text-center">Explora por Categorías</h2>
+  <div class="d-flex justify-content-center flex-wrap">
+    <a th:each="categoria : ${categorias}"
+       th:href="@{/cursos/categoria/{id}(id=${categoria.id})}"
+       class="btn btn-outline-primary">
+      [[${categoria.nombre}]]
+    </a>
+  </div>
+</div>
+
+<!-- Pie de página -->
+<footer class="bg-dark text-white text-center py-3 mt-4">
+  <div class="container">
+    <p>&copy; 2023 Sistema de Cursos. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<!-- Scripts de Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Cursos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Lista de Cursos</h1>
+    <a th:href="@{/cursos/new}" class="btn btn-primary mb-3">Agregar Curso</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Fecha de Inicio</th>
+            <th>Fecha Final</th>
+            <th>Imagen</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="curso : ${cursos}">
+            <td th:text="${curso.id}"></td>
+            <td th:text="${curso.nombre}"></td>
+            <td th:text="${curso.descripcion}"></td>
+            <td th:text="${#temporals.format(curso.fechaInicio, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#temporals.format(curso.fechaFinal, 'dd/MM/yyyy')}"></td>
+            <td>
+                <img th:src="${curso.imagen}" alt="Imagen del curso" width="50" height="50">
+            </td>
+            <td>
+                <a th:href="@{/cursos/detail/{id}(id=${curso.id})}" class="btn btn-info btn-sm">Detalles</a>
+                <a th:href="@{/cursos/edit/{id}(id=${curso.id})}" class="btn btn-warning btn-sm">Editar</a>
+                <a th:href="@{/cursos/delete/{id}(id=${curso.id})}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
