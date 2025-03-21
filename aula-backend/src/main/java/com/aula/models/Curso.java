@@ -18,11 +18,12 @@ public class Curso {
 
     @ManyToOne
     @JoinColumn(name = "profesor_id")
-    @JsonManagedReference // Indica que esta es la parte "manejada" de la relación
+    @JsonManagedReference
     private Profesor profesor;
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
+    @JsonManagedReference
     private Categoria categoria;
 
     // Getters y Setters

@@ -1,5 +1,6 @@
 package com.aula.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class Categoria {
     private String nombre;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Curso> cursos;
 
     // Getters y Setters
