@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getProfesores, deleteProfesor } from '../service/api';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ProfesorList = () => {
   const [profesores, setProfesores] = useState([]);
@@ -8,7 +8,7 @@ const ProfesorList = () => {
 
   const loadProfesores = async () => {
     try {
-      const response = await getProfesores();
+      const response = await axios.get('http://localhost:8080/profesores');
       setProfesores(response.data);
     } catch (error) {
       console.error("Error cargando profesores:", error);
@@ -22,7 +22,7 @@ const ProfesorList = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Estás seguro de eliminar este profesor?')) {
       try {
-        await deleteProfesor(id);
+        await axios.delete(`http://localhost:8080/profesores/delete/${id}`);
         await loadProfesores();
       } catch (error) {
         console.error("Error eliminando profesor:", error);
@@ -36,6 +36,7 @@ const ProfesorList = () => {
         Lista de Profesores
         <button 
           onClick={() => navigate('/profesores/nuevo')}
+          className="btn-add"
           style={{
             backgroundColor: '#4CAF50',
             color: 'white',
@@ -49,7 +50,7 @@ const ProfesorList = () => {
             gap: '5px'
           }}
         >
-          <span>+</span> Agregar Profesor
+          + Agregar Profesor
         </button>
       </h2>
       

@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 const CategoriaList = () => {
   const [categorias, setCategorias] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const loadCategorias = async () => {
@@ -12,6 +14,9 @@ const CategoriaList = () => {
       setCategorias(response.data);
     } catch (error) {
       console.error("Error cargando categorías:", error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,26 +35,18 @@ const CategoriaList = () => {
     }
   };
 
+  if (loading) return <div>Cargando categorías...</div>;
+  if (error) return <div>Error al cargar las categorías</div>;
+
   return (
     <div className="categoria-container">
       <h2 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         Categorías
         <button 
           onClick={() => navigate('/categorias/nuevo')}
-          style={{
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '0.9rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px'
-          }}
+          className="btn-add"
         >
-          <span>+</span> Agregar Nueva
+          + Agregar Categoría
         </button>
       </h2>
       

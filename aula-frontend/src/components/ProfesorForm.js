@@ -1,99 +1,101 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
-const ProfesorList = () => {
-  const [profesores, setProfesores] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const ProfesorForm = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    nombre: '',
+    email: '',
+    foto: ''
+  });
 
   useEffect(() => {
-    const fetchProfesores = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/profesores');
-        setProfesores(response.data);
-      } catch (error) {
-        console.error('Error fetching profesores:', error);
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfesores();
-  }, []);
+    if (id) {
+      const loadProfesor = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/profesores/${id}`);
+          setFormData(response.data);
+        } catch (error) {
+          console.error('Error cargando profesor:', error);
+        }
+      };
+      loadProfesor();
+    }
+  }, [id]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de eliminar este profesor?')) {
-      try {
-        await axios.delete(`http://localhost:8080/profesores/delete/${id}`);
-        setProfesores(profesores.filter(profesor => profesor.id !== id));
-      } catch (error) {
-        console.error('Error eliminando profesor:', error);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (id) {
+        await axios.put(`http://localhost:8080/profesores/edit/${id}`, formData);
+      } else {
+        await axios.post('http://localhost:8080/profesores/save', formData);
       }
+      navigate('/profesores');
+    } catch (error) {
+      console.error('Error al guardar:', error);
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>Error al cargar la lista de profesores.</div>;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   return (
-    <div className="profesor-container">
-      <h2 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        Lista de Profesores
-        <button 
-          onClick={() => navigate('/profesores/nuevo')}
-          style={{
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '0.9rem'
-          }}
-        >
-          + Agregar Profesor
-        </button>
-      </h2>
-      
-      <div className="profesor-grid">
-        {profesores.map(profesor => (
-          <div key={profesor.id} className="profesor-card">
-            <div className="profesor-avatar">
-              <img 
-                src={`http://localhost:8080${profesor.foto}`} 
-                alt={`Foto de ${profesor.nombre}`}
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/150';
-                  e.target.alt = 'Foto no disponible';
-                }}
-                loading="lazy"
-              />
-            </div>
-            <div className="profesor-info">
-              <h3>{profesor.nombre}</h3>
-              <p className="profesor-email">{profesor.email}</p>
-              <div className="profesor-actions">
-                <button 
-                  onClick={() => navigate(`/profesores/editar/${profesor.id}`)}
-                  className="btn-edit"
-                >
-                  Editar
-                </button>
-                <button 
-                  onClick={() => handleDelete(profesor.id)}
-                  className="btn-delete"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="profesor-form-container">
+      <h2>{id ? 'Editar Profesor' : 'Nuevo Profesor'}</h2>
+      <form onSubmit={handleSubmit} className="profesor-form">
+        <div className="form-group">
+          <label>Nombre:</label>
+          <input
+            type="text"
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>URL de la Foto:</label>
+          <input
+            type="url"
+            name="foto"
+            value={formData.foto}
+            onChange={handleChange}
+            placeholder="https://ejemplo.com/foto.jpg"
+          />
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" className="btn-submit">
+            {id ? 'Actualizar' : 'Guardar'}
+          </button>
+          <button 
+            type="button" 
+            onClick={() => navigate('/profesores')}
+            className="btn-cancel"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
 
-export default ProfesorList;
+export default ProfesorForm;
