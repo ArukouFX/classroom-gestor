@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CursoList = () => {
     const [cursos, setCursos] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCursos = async () => {
@@ -19,7 +20,23 @@ const CursoList = () => {
 
     return (
         <div>
-            <h1>Lista de Cursos</h1>
+            <h1 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                Lista de Cursos
+                <button 
+                    onClick={() => navigate('/cursos/nuevo')}
+                    style={{
+                        backgroundColor: '#4CAF50',
+                        color: 'white',
+                        border: 'none',
+                        padding: '8px 16px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '1rem'
+                    }}
+                >
+                    + Agregar Curso
+                </button>
+            </h1>
             <ul>
                 {cursos.map((curso) => (
                     <li key={curso.id}>
